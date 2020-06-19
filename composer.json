@@ -1,6 +1,6 @@
 {
   "name": "bootell/yii2-phpredis",
-  "description": "Redis Cache, Session and ActiveRecord for the Yii framework",
+  "description": "Redis Cache, Session and ActiveRecord for the Yii2 Using PhpRedis",
   "keywords": ["yii2", "redis", "phpredis", "active-record", "cache", "session"],
   "license": "BSD-3-Clause",
   "require": {

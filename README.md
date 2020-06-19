@@ -2,7 +2,7 @@
     <a href="http://redis.io/" target="_blank" rel="external">
         <img src="http://download.redis.io/logocontest/82.png" height="100px">
     </a>
-    <h1 align="center">Yii 2 Redis extension using phpredis</h1>
+    <h1 align="center">Yii 2 Redis extension using PhpRedis</h1>
     <br>
 </p>
 
@@ -30,7 +30,7 @@ return [
     //....
     'components' => [
         'redis' => [
-            'class' => 'bootell\redis\Connection',
+            'class' => bootell\redis\Connection::class,
             'hostname' => 'localhost',
             'port' => 6379,
             'database' => 0,
