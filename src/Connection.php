@@ -3,6 +3,7 @@
 namespace bootell\redis;
 
 use Redis;
+use yii\db\Exception;
 use yii\redis\LuaScriptBuilder;
 
 /**
@@ -281,7 +282,7 @@ class Connection extends \yii\redis\Connection
             $message = "Failed to open redis DB connection ($connection): {$e->getMessage()}";
             \Yii::error($message, __CLASS__);
             $message = YII_DEBUG ? $message : 'Failed to open DB connection.';
-            throw new \RedisException($message, $e->getTrace(), $e->getCode());
+            throw new Exception($message, $e->getTrace(), $e->getCode(), $e->getPrevious());
         }
     }
 
@@ -297,7 +298,7 @@ class Connection extends \yii\redis\Connection
                 $this->_redis->close();
                 $this->_redis = false;
             } catch (\RedisException $e) {
-                //
+                \Yii::error($e, __CLASS__);
             }
         }
     }
@@ -318,8 +319,7 @@ class Connection extends \yii\redis\Connection
             $result = call_user_func_array([$this->_redis, 'rawCommand'], array_merge(explode(' ', $name), $raw));
             return $this->parseResponse($result);
         } catch (\RedisException $e) {
-            \Yii::error($e, __METHOD__);
-            throw new $e;
+            throw new Exception($e->getMessage(), $e->getTrace(), $e->getCode(), $e->getPrevious());
         }
     }
 
