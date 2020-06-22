@@ -5,7 +5,7 @@ namespace yiiunit\extensions\redis;
 use yii\di\Container;
 use yii\helpers\ArrayHelper;
 use Yii;
-use bootell\redis\Connection;
+use bootell\Yii2\redis\Connection;
 
 /**
  * This is the base class for all yii framework unit tests.

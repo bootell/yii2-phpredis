@@ -3,8 +3,8 @@
 namespace yiiunit\extensions\redis;
 
 use yii\base\InvalidConfigException;
-use bootell\redis\Cache;
-use bootell\redis\Connection;
+use bootell\Yii2\redis\Cache;
+use bootell\Yii2\redis\Connection;
 use yiiunit\framework\caching\CacheTestCase;
 
 /**

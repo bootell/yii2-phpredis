@@ -3,8 +3,8 @@
 namespace yiiunit\extensions\redis;
 
 use Yii;
-use bootell\redis\Connection;
-use bootell\redis\Mutex;
+use bootell\Yii2\redis\Connection;
+use bootell\Yii2\redis\Mutex;
 
 /**
  * Class for testing redis mutex

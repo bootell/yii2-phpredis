@@ -1,6 +1,6 @@
 <?php
 
-namespace bootell\redis;
+namespace bootell\Yii2\redis;
 
 use Redis;
 use yii\db\Exception;

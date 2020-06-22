@@ -4,7 +4,7 @@ namespace yiiunit\extensions\redis;
 use Yii;
 use yii\helpers\ArrayHelper;
 use yii\log\Logger;
-use bootell\redis\Connection;
+use bootell\Yii2\redis\Connection;
 
 /**
  * @group redis

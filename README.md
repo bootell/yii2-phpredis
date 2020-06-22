@@ -30,7 +30,7 @@ return [
     //....
     'components' => [
         'redis' => [
-            'class' => bootell\redis\Connection::class,
+            'class' => bootell\Yii2\redis\Connection::class,
             'hostname' => 'localhost',
             'port' => 6379,
             'database' => 0,
