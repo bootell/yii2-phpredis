@@ -1,6 +1,6 @@
 <p align="center">
     <a href="http://redis.io/" target="_blank" rel="external">
-        <img src="http://download.redis.io/logocontest/82.png" height="100px">
+        <img src="http://download.redis.io/redis.png" height="100px">
     </a>
     <h1 align="center">Yii 2 Redis extension using PhpRedis</h1>
     <br>

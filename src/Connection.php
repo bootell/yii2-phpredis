@@ -193,6 +193,19 @@ use yii\redis\LuaScriptBuilder;
  * @method mixed unwatch() Forget about all watched keys. <https://redis.io/commands/unwatch>
  * @method mixed wait($numslaves, $timeout) Wait for the synchronous replication of all the write commands sent in the context of the current connection. <https://redis.io/commands/wait>
  * @method mixed watch(...$keys) Watch the given keys to determine execution of the MULTI/EXEC block. <https://redis.io/commands/watch>
+ * @method mixed xack($stream, $group, ...$ids) Removes one or multiple messages from the pending entries list (PEL) of a stream consumer group <https://redis.io/commands/xack>
+ * @method mixed xadd($stream, $id, $field, $value, ...$fieldsValues) Appends the specified stream entry to the stream at the specified key <https://redis.io/commands/xadd>
+ * @method mixed xclaim($stream, $group, $consumer, $minIdleTimeMs, $id, ...$options) Changes the ownership of a pending message, so that the new owner is the consumer specified as the command argument <https://redis.io/commands/xclaim>
+ * @method mixed xdel($stream, ...$ids) Removes the specified entries from a stream, and returns the number of entries deleted <https://redis.io/commands/xdel>
+ * @method mixed xgroup($subCommand, $stream, $group, ...$options) Manages the consumer groups associated with a stream data structure <https://redis.io/commands/xgroup>
+ * @method mixed xinfo($subCommand, $stream, ...$options) Retrieves different information about the streams and associated consumer groups <https://redis.io/commands/xinfo>
+ * @method mixed xlen($stream) Returns the number of entries inside a stream <https://redis.io/commands/xlen>
+ * @method mixed xpending($stream, $group, ...$options) Fetching data from a stream via a consumer group, and not acknowledging such data, has the effect of creating pending entries <https://redis.io/commands/xpending>
+ * @method mixed xrange($stream, $start, $end, ...$options) Returns the stream entries matching a given range of IDs <https://redis.io/commands/xrange>
+ * @method mixed xread(...$options) Read data from one or multiple streams, only returning entries with an ID greater than the last received ID reported by the caller <https://redis.io/commands/xread>
+ * @method mixed xreadgroup($subCommand, $group, $consumer, ...$options) Special version of the XREAD command with support for consumer groups <https://redis.io/commands/xreadgroup>
+ * @method mixed xrevrange($stream, $end, $start, ...$options) Exactly like XRANGE, but with the notable difference of returning the entries in reverse order, and also taking the start-end range in reverse order <https://redis.io/commands/xrevrange>
+ * @method mixed xtrim($stream, $strategy, ...$options) Trims the stream to a given number of items, evicting older items (items with lower IDs) if needed <https://redis.io/commands/xtrim>
  * @method mixed zadd($key, ...$options) Add one or more members to a sorted set, or update its score if it already exists. <https://redis.io/commands/zadd>
  * @method mixed zcard($key) Get the number of members in a sorted set. <https://redis.io/commands/zcard>
  * @method mixed zcount($key, $min, $max) Count the members in a sorted set with scores within the given values. <https://redis.io/commands/zcount>
@@ -202,7 +215,7 @@ use yii\redis\LuaScriptBuilder;
  * @method mixed zrange($key, $start, $stop, $WITHSCORES = null) Return a range of members in a sorted set, by index. <https://redis.io/commands/zrange>
  * @method mixed zrangebylex($key, $min, $max, $LIMIT = null, $offset = null, $count = null) Return a range of members in a sorted set, by lexicographical range. <https://redis.io/commands/zrangebylex>
  * @method mixed zrevrangebylex($key, $max, $min, $LIMIT = null, $offset = null, $count = null) Return a range of members in a sorted set, by lexicographical range, ordered from higher to lower strings.. <https://redis.io/commands/zrevrangebylex>
- * @method mixed zrangebyscore($key, $min, $max, $WITHSCORES = null, $LIMIT = null, $offset = null, $count = null) Return a range of members in a sorted set, by score. <https://redis.io/commands/zrangebyscore>
+ * @method mixed zrangebyscore($key, $min, $max, ...$options) Return a range of members in a sorted set, by score. <https://redis.io/commands/zrangebyscore>
  * @method mixed zrank($key, $member) Determine the index of a member in a sorted set. <https://redis.io/commands/zrank>
  * @method mixed zrem($key, ...$members) Remove one or more members from a sorted set. <https://redis.io/commands/zrem>
  * @method mixed zremrangebylex($key, $min, $max) Remove all members in a sorted set between the given lexicographical range. <https://redis.io/commands/zremrangebylex>
@@ -218,9 +231,9 @@ use yii\redis\LuaScriptBuilder;
  * @method mixed hscan($key, $cursor, $MATCH = null, $pattern = null, $COUNT = null, $count = null) Incrementally iterate hash fields and associated values. <https://redis.io/commands/hscan>
  * @method mixed zscan($key, $cursor, $MATCH = null, $pattern = null, $COUNT = null, $count = null) Incrementally iterate sorted sets elements and associated scores. <https://redis.io/commands/zscan>
  *
- * @property string $driverName Name of the DB driver. This property is read-only.
- * @property bool $isActive Whether the DB connection is established. This property is read-only.
- * @property LuaScriptBuilder $luaScriptBuilder This property is read-only.
+ * @property-read string $driverName Name of the DB driver. This property is read-only.
+ * @property-read bool $isActive Whether the DB connection is established. This property is read-only.
+ * @property-read LuaScriptBuilder $luaScriptBuilder This property is read-only.
  *
  */
 class Connection extends \yii\redis\Connection
@@ -262,7 +275,7 @@ class Connection extends \yii\redis\Connection
             return;
         }
         $connection = $this->hostname . ':' . $this->port . ', database=' . $this->database;
-        \Yii::trace('Opening redis DB connection: ' . $connection, __METHOD__);
+        \Yii::debug('Opening redis DB connection: ' . $connection, __METHOD__);
         try {
             $this->_redis = new Redis();
             if ($this->use_pconnect) {
@@ -294,7 +307,7 @@ class Connection extends \yii\redis\Connection
         if ($this->_redis !== false) {
             try {
                 $connection = $this->hostname . ':' . $this->port . ', database=' . $this->database;
-                \Yii::trace('Closing DB connection: ' . $connection, __METHOD__);
+                \Yii::debug('Closing DB connection: ' . $connection, __METHOD__);
                 $this->_redis->close();
                 $this->_redis = false;
             } catch (\RedisException $e) {
@@ -314,7 +327,7 @@ class Connection extends \yii\redis\Connection
         foreach (self::parseRequest($params) as $item) {
             $raw[] = $item;
         }
-        \Yii::trace("Executing Redis Command: {$name}", __METHOD__);
+        \Yii::debug("Executing Redis Command: {$name}", __METHOD__);
         try {
             $result = call_user_func_array([$this->_redis, 'rawCommand'], array_merge(explode(' ', $name), $raw));
             return $this->parseResponse($result);
