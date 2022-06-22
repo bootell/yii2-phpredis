@@ -329,7 +329,7 @@ class Connection extends \yii\redis\Connection
         }
         \Yii::debug("Executing Redis Command: {$name}", __METHOD__);
         try {
-            $result = call_user_func_array([$this->_redis, 'rawCommand'], array_merge(explode(' ', $name), $raw));
+            $result = call_user_func_array([$this->_redis, 'rawCommand'], array_map('strval', array_merge(explode(' ', $name), $raw)));
             return $this->parseResponse($result);
         } catch (\RedisException $e) {
             throw new Exception($e->getMessage(), $e->getTrace(), $e->getCode(), $e->getPrevious());
